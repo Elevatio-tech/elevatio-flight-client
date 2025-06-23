@@ -3,13 +3,13 @@ import { CreditCard, Wallet, DollarSign, Smartphone, Building2, Banknote, CheckC
 
 // Mock API - replace with actual import from '../common'
 const summaryApi = {
-  processPayment: { url: 'http://localhost:5000/api/payments/process', method: 'POST' },
-  verifyPayment: { url: 'http://localhost:5000/api/payments/verify/:transactionId', method: 'GET' },
-  fundWallet: { url: 'http://localhost:5000/api/payments/wallet/fund', method: 'POST' },
-  getWalletBalance: { url: 'http://localhost:5000/api/payments/wallet/balance', method: 'GET' },
-  getWalletTransactions: { url: 'http://localhost:5000/api/payments/wallet/transactions', method: 'GET' },
-  withdrawFromWallet: { url: 'http://localhost:5000/api/payments/wallet/withdraw', method: 'POST' },
-  getPaymentHistory: { url: 'http://localhost:5000/api/payments/history', method: 'GET' }
+  processPayment: { url: 'https://elevatio.onrender.com/api/payments/process', method: 'POST' },
+  verifyPayment: { url: 'https://elevatio.onrender.com/api/payments/verify/:transactionId', method: 'GET' },
+  fundWallet: { url: 'https://elevatio.onrender.com/api/payments/wallet/fund', method: 'POST' },
+  getWalletBalance: { url: 'https://elevatio.onrender.com/api/payments/wallet/balance', method: 'GET' },
+  getWalletTransactions: { url: 'https://elevatio.onrender.com/api/payments/wallet/transactions', method: 'GET' },
+  withdrawFromWallet: { url: 'https://elevatio.onrender.com/api/payments/wallet/withdraw', method: 'POST' },
+  getPaymentHistory: { url: 'https://elevatio.onrender.com/api/payments/history', method: 'GET' }
 };
 
 // Flutterwave Payment Component

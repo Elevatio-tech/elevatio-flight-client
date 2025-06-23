@@ -12,59 +12,6 @@ import {
 } from 'lucide-react';
 import adminApi from '../services/adminApi';
 
-// // AdminApiService class (embedded for the component)
-// const API_BASE_URL = 'http://localhost:5000/api';
-
-// class AdminApiService {
-//   constructor() {
-//     this.baseURL = `${API_BASE_URL}/admin`;
-//   }
-
-//   async makeRequest(endpoint, options = {}) {
-//     const token = localStorage.getItem('adminToken'); 
-    
-//     const config = {
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Authorization': `Bearer ${token}`,
-//         ...options.headers,
-//       },
-//       ...options,
-//     };
-
-//     try {
-//       const response = await fetch(`${this.baseURL}${endpoint}`, config);
-      
-//       if (!response.ok) {
-//         const errorData = await response.json().catch(() => ({}));
-//         throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-//       }
-      
-//       return await response.json();
-//     } catch (error) {
-//       console.error('API Request failed:', error);
-//       throw error;
-//     }
-//   }
-
-//   async getAllRefunds(page = 1, limit = 20, filters = {}) {
-//     const queryParams = new URLSearchParams({
-//       page: page.toString(),
-//       limit: limit.toString(),
-//       ...filters
-//     });
-    
-//     return this.makeRequest(`/refunds?${queryParams}`);
-//   }
-
-//   async processRefund(refundId, action) {
-//     return this.makeRequest(`/refunds/${refundId}/${action}`, {
-//       method: 'PUT',
-//     });
-//   }
-// }
-
-// const adminApiService = new AdminApiService();
 
 const RefundsManagement = () => {
   const [refunds, setRefunds] = useState([]);

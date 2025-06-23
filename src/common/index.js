@@ -1,4 +1,4 @@
-const backendUrl = 'http://localhost:5000';
+const backendUrl = 'https://elevatio.onrender.com';
 
 const summaryApi = {
      // ============== USER ROUTES ==============

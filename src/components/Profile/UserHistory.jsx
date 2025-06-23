@@ -55,7 +55,7 @@ const UserHistory = () => {
   const [expandedItems, setExpandedItems] = useState(new Set());
 
   // Mock API endpoints - replace with your actual endpoints
-  const API_BASE = 'http://localhost:5000/api';
+  const API_BASE = 'https://elevatio.onrender.com/api';
   
   const summaryApi = {
     getSearchHistory: {

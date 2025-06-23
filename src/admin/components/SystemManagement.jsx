@@ -7,7 +7,6 @@ import {
   AlertCircle
 } from 'lucide-react';
 import adminApi from '../services/adminApi';
-// import adminApiService from '../services/adminApi'; // Import your API service
 
 const SystemManagement = () => {
   const [activeSection, setActiveSection] = useState('settings');
@@ -55,7 +54,7 @@ const SystemManagement = () => {
       setLoading(true);
       setError(null);
       
-      // Check if admin token exists
+      // Checking if admin token exists
       const token = localStorage.getItem('adminToken');
       if (!token) {
         throw new Error('Admin authentication required. Please log in.');
