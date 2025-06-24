@@ -19,11 +19,8 @@ import {
   Shield,
   Zap
 } from 'lucide-react'
+import Header from '../Navbar/Header' 
 
-// Mock Header component - replace with your actual Header import
-const Header = () => (
-  <div className="h-16 bg-transparent"></div>
-)
 
 function GetInTouch() {
   const [isVisible, setIsVisible] = useState(false)
