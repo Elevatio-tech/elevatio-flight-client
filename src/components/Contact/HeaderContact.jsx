@@ -93,7 +93,7 @@
 import React from 'react'
 import { FiPhoneCall, FiMail } from "react-icons/fi";
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
-import Phone from '../../utils/Phone';
+import PhoneNumber from '../../utils/PhoneNumber';
 import { themeColors, socialColors } from '../../theme/index';
 
 function HeaderContact() {
@@ -109,7 +109,7 @@ function HeaderContact() {
               <FiPhoneCall size={16} style={{ color: themeColors.primary.text }} />
               <div className="flex items-center text-sm">
                 <span>+</span>
-                <Phone/>
+                <PhoneNumber/>
               </div>
             </div>
             

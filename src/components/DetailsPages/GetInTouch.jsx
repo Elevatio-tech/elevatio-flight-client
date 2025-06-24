@@ -38,8 +38,8 @@ function GetInTouch() {
     {
       icon: Mail,
       title: 'Email Us',
-      primary: 'hello@elevatio.com',
-      secondary: 'support@elevatio.com',
+      primary: 'hello@flyelevatio.com',
+      secondary: 'support@flyelevatio.com',
       description: 'Drop us a line anytime',
       color: 'from-blue-400 to-cyan-500'
     },
@@ -47,7 +47,7 @@ function GetInTouch() {
       icon: Phone,
       title: 'Call Us',
       primary: '+234 800 ELEVATIO',
-      secondary: '+234 800 353 8284',
+      secondary: '+234 912 275 8095',
       description: '24/7 customer support',
       color: 'from-green-400 to-emerald-500'
     },

@@ -66,6 +66,7 @@
 import { Plane, Mail, Phone, MapPin } from 'lucide-react';
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaYoutube } from "react-icons/fa";
 import { Link } from 'react-router-dom';
+import PhoneNumber from '../../utils/PhoneNumber';
 
 const Footer = () => {
   return (
@@ -91,7 +92,8 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-2 text-sm text-gray-300">
                 <Phone className="h-4 w-4" />
-                <span>+234 (0) 123 456 7890</span>
+                <span>+</span>
+                 <PhoneNumber/>
               </div>
             </div>
 
