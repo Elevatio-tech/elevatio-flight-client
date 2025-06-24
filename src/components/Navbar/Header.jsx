@@ -273,7 +273,7 @@ function Header() {
             </div>
             <div className="flex flex-col">
               <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
-                FlyElevatio
+                Elevatio
               </span>
               <span className="text-xs hidden sm:block" style={{ color: themeColors.neutral.text }}>
                 Flight Booking
