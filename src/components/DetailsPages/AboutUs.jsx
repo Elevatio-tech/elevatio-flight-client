@@ -78,10 +78,10 @@ function AboutUs() {
   ]
 
   const milestones = [
-    { year: '2020', title: 'Founded', description: 'Elevatio was born with a vision to revolutionize flight booking' },
-    { year: '2021', title: 'Global Expansion', description: 'Expanded to serve customers across Africa and beyond' },
-    { year: '2023', title: '1M Bookings', description: 'Reached the milestone of 1 million successful bookings' },
-    { year: '2024', title: 'AI Integration', description: 'Launched AI-powered flight recommendations and smart pricing' }
+    { year: '2021', title: 'Founded', description: 'Elevatio was born with a vision to revolutionize flight booking' },
+    { year: '2022', title: 'Global Expansion', description: 'Expanded to serve customers across Africa and beyond' },
+    { year: '2024', title: '1M Bookings', description: 'Reached the milestone of 1 million successful bookings' },
+    { year: '2025', title: 'AI Integration', description: 'Launched AI-powered flight recommendations and smart pricing' }
   ]
 
   useEffect(() => {
@@ -158,7 +158,7 @@ function AboutUs() {
               </h2>
               <div className="space-y-6 text-white/80 text-lg leading-relaxed">
                 <p>
-                  Founded in 2020, Elevatio emerged from a simple yet powerful vision: to transform 
+                  Founded in 2021, Elevatio emerged from a simple yet powerful vision: to transform 
                   the way people book flights by combining cutting-edge technology with genuine 
                   human care.
                 </p>
