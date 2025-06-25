@@ -14,8 +14,10 @@ import {
   CheckCircle
 } from 'lucide-react'
 import Header from '../Navbar/Header'
+import { useNavigate } from 'react-router-dom'
 
 function AboutUs() {
+  const navigate = useNavigate()
   const [isVisible, setIsVisible] = useState(false)
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
 
@@ -94,6 +96,11 @@ function AboutUs() {
 
     return () => clearInterval(testimonialInterval)
   }, [])
+
+
+   const handleSearch=()=>{
+    navigate('/search')
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
@@ -323,7 +330,9 @@ function AboutUs() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="group relative px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-full font-semibold text-lg shadow-2xl hover:shadow-blue-500/25 transform hover:scale-105 transition-all duration-300 overflow-hidden">
+              <button 
+                onClick={handleSearch}
+              className="group relative px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-full font-semibold text-lg shadow-2xl hover:shadow-blue-500/25 transform hover:scale-105 transition-all duration-300 overflow-hidden">
                 <span className="relative z-10 flex items-center justify-center">
                   Book Your Flight
                   <Plane className="ml-2 group-hover:translate-x-1 transition-transform duration-300" size={20} />
