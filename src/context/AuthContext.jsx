@@ -1,5 +1,6 @@
 // import React, { useState, useContext, createContext, useEffect } from 'react';
 // import summaryApi from '../common';
+// import { backendUrl } from '../config/config';
 
 // // Auth Context
 // const AuthContext = createContext();
@@ -15,6 +16,20 @@
 // // Helper functions for localStorage management
 // const getStoredAuth = () => {
 //   try {
+//     // Check for admin auth first
+//     const adminToken = localStorage.getItem('adminToken');
+//     const adminUser = localStorage.getItem('adminUser');
+    
+//     if (adminToken && adminUser) {
+//       return {
+//         token: adminToken,
+//         refreshToken: null,
+//         user: JSON.parse(adminUser),
+//         userType: 'admin'
+//       };
+//     }
+    
+//     // Fall back to regular auth
 //     return {
 //       token: localStorage.getItem('token'),
 //       refreshToken: localStorage.getItem('refreshToken'),
@@ -34,11 +49,18 @@
 
 // const setStoredAuth = (authData) => {
 //   try {
-//     if (authData.token) localStorage.setItem('token', authData.token);
-//     if (authData.refreshToken) localStorage.setItem('refreshToken', authData.refreshToken);
-//     if (authData.user) localStorage.setItem('user', JSON.stringify(authData.user));
-//     if (authData.userType) localStorage.setItem('userType', authData.userType);
-//     if (authData.supabaseToken) localStorage.setItem('supabaseToken', authData.supabaseToken);
+//     if (authData.userType === 'admin') {
+//       // Store admin auth separately
+//       if (authData.token) localStorage.setItem('adminToken', authData.token);
+//       if (authData.user) localStorage.setItem('adminUser', JSON.stringify(authData.user));
+//     } else {
+//       // Store regular auth
+//       if (authData.token) localStorage.setItem('token', authData.token);
+//       if (authData.refreshToken) localStorage.setItem('refreshToken', authData.refreshToken);
+//       if (authData.user) localStorage.setItem('user', JSON.stringify(authData.user));
+//       if (authData.userType) localStorage.setItem('userType', authData.userType);
+//       if (authData.supabaseToken) localStorage.setItem('supabaseToken', authData.supabaseToken);
+//     }
 //   } catch (error) {
 //     console.error('Error writing to localStorage:', error);
 //   }
@@ -46,11 +68,16 @@
 
 // const clearStoredAuth = () => {
 //   try {
+//     // Clear regular auth
 //     localStorage.removeItem('token');
 //     localStorage.removeItem('supabaseToken');
 //     localStorage.removeItem('refreshToken');
 //     localStorage.removeItem('userType');
 //     localStorage.removeItem('user');
+    
+//     // Clear admin auth
+//     localStorage.removeItem('adminToken');
+//     localStorage.removeItem('adminUser');
 //   } catch (error) {
 //     console.error('Error clearing localStorage:', error);
 //   }
@@ -73,16 +100,18 @@
       
 //       // If we have both token and user data, consider the user authenticated
 //       if (token && user) {
-//         console.log('✅ Found existing session, user is authenticated');
+//         console.log('✅ Found existing session, user is authenticated', { userType, email: user.email });
 //         setLoading(false);
         
-//         // Optionally verify session in background (don't logout on failure)
-//         verifySessionInBackground();
+//         // Only verify session in background for non-admin users
+//         if (userType !== 'admin') {
+//           verifySessionInBackground();
+//         }
 //         return;
 //       }
       
-//       // If we have token but no user data, try to fetch user profile
-//       if (token && !user) {
+//       // If we have token but no user data, try to fetch user profile (not for admin)
+//       if (token && !user && userType !== 'admin') {
 //         console.log('🔄 Found token but no user data, fetching profile...');
 //         await fetchUserProfile(false); // Don't logout on failure
 //         return;
@@ -99,7 +128,7 @@
 //   // Background session verification (doesn't logout on failure)
 //   const verifySessionInBackground = async () => {
 //     try {
-//       if (!token) return;
+//       if (!token || userType === 'admin') return; // Skip for admin users
       
 //       console.log('🔄 Background session verification...');
       
@@ -118,7 +147,7 @@
 //         if (verifyResult.user && JSON.stringify(verifyResult.user) !== JSON.stringify(user)) {
 //           // Update user data if it changed
 //           setUser(verifyResult.user);
-//           setStoredAuth({ user: verifyResult.user });
+//           setStoredAuth({ user: verifyResult.user, userType });
 //         }
 //       } else if (verifyResponse.status === 401 && refreshToken) {
 //         console.log('🔄 Token expired, attempting background refresh...');
@@ -133,8 +162,8 @@
 //   // Enhanced profile fetching (with option to not logout on failure)
 //   const fetchUserProfile = async (logoutOnFailure = true) => {
 //     try {
-//       if (!token) {
-//         if (logoutOnFailure) logout();
+//       if (!token || userType === 'admin') {
+//         if (logoutOnFailure && userType !== 'admin') logout();
 //         return null;
 //       }
       
@@ -150,7 +179,7 @@
 //         const userData = result.data || result.user || result;
         
 //         setUser(userData);
-//         setStoredAuth({ user: userData });
+//         setStoredAuth({ user: userData, userType });
 //         setLoading(false);
         
 //         return userData;
@@ -183,8 +212,8 @@
 //   // Enhanced token refresh (with option to not logout on failure)
 //   const handleTokenRefresh = async (logoutOnFailure = true) => {
 //     try {
-//       if (!refreshToken) {
-//         if (logoutOnFailure) logout();
+//       if (!refreshToken || userType === 'admin') {
+//         if (logoutOnFailure && userType !== 'admin') logout();
 //         return null;
 //       }
       
@@ -231,9 +260,61 @@
 //     }
 //   };
 
+//   // Admin login function
+//   const adminLogin = async (credentials) => {
+//     try {
+//       setLoading(true);
+//       console.log('🔐 Attempting admin login:', { email: credentials.email });
+      
+//       const response = await fetch(`${backendUrl}/api/admin/auth/login`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(credentials),
+//       });
+
+//       const data = await response.json();
+
+//       if (!response.ok) {
+//         console.error('❌ Admin login failed:', data);
+//         throw new Error(data.message || data.error || 'Admin login failed');
+//       }
+
+//       console.log('✅ Admin login successful:', { 
+//         email: data.user?.email, 
+//         role: data.user?.role 
+//       });
+      
+//       // Update auth state
+//       const authData = {
+//         token: data.token,
+//         user: data.user,
+//         userType: 'admin'
+//       };
+      
+//       setToken(data.token);
+//       setUser(data.user);
+//       setUserType('admin');
+//       setStoredAuth(authData);
+      
+//       return data;
+//     } catch (error) {
+//       console.error('❌ Admin login error:', error);
+//       throw error;
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
 //   const login = async (credentials, loginUserType = 'user') => {
 //     try {
 //       setLoading(true);
+      
+//       // Handle admin login
+//       if (loginUserType === 'admin') {
+//         return await adminLogin(credentials);
+//       }
       
 //       const endpoint = loginUserType === 'partner' ? summaryApi.partnerLogin : summaryApi.userLogin;
       
@@ -445,7 +526,7 @@
     
 //     try {
 //       // Call backend logout endpoint if token exists
-//       if (token) {
+//       if (token && userType !== 'admin') {
 //         await fetch(summaryApi.userLogout.url, {
 //           method: summaryApi.userLogout.method,
 //           headers: { 'Authorization': `Bearer ${token}` }
@@ -469,6 +550,10 @@
 
 //   const updateProfile = async (profileData) => {
 //     try {
+//       if (userType === 'admin') {
+//         throw new Error('Admin profile updates not supported');
+//       }
+      
 //       const endpoint = userType === 'partner' ? summaryApi.updatePartnerProfile : summaryApi.updateUserProfile;
       
 //       const response = await fetch(endpoint.url, {
@@ -493,7 +578,7 @@
 
 //       const userData = data.data || data.user || data.partner || data;
 //       setUser(userData);
-//       setStoredAuth({ user: userData });
+//       setStoredAuth({ user: userData, userType });
       
 //       return userData;
 //     } catch (error) {
@@ -539,7 +624,7 @@
 
 //       if (data.user) {
 //         setUser(data.user);
-//         setStoredAuth({ user: data.user });
+//         setStoredAuth({ user: data.user, userType });
 //       }
       
 //       return data;
@@ -580,6 +665,7 @@
 //     isAuthenticated: !!user && !!token,
 //     isPartner: userType === 'partner',
 //     isUser: userType === 'user',
+//     isAdmin: userType === 'admin',
     
 //     // Authentication methods
 //     login,
@@ -608,7 +694,6 @@
 //     </AuthContext.Provider>
 //   );
 // };
-
 
 
 import React, { useState, useContext, createContext, useEffect } from 'react';
@@ -691,6 +776,9 @@ const clearStoredAuth = () => {
     // Clear admin auth
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminUser');
+    
+    // Clear any redirect paths that might cause issues
+    localStorage.removeItem('redirectAfterLogin');
   } catch (error) {
     console.error('Error clearing localStorage:', error);
   }
@@ -702,7 +790,7 @@ export const AuthProvider = ({ children }) => {
   const storedAuth = getStoredAuth();
   
   const [user, setUser] = useState(storedAuth.user);
-  const [loading, setLoading] = useState(!!storedAuth.token); // Only show loading if we have a token to verify
+  const [loading, setLoading] = useState(true); // Always start with loading true
   const [token, setToken] = useState(storedAuth.token);
   const [refreshToken, setRefreshToken] = useState(storedAuth.refreshToken);
   const [userType, setUserType] = useState(storedAuth.userType);
@@ -711,39 +799,46 @@ export const AuthProvider = ({ children }) => {
     const initializeAuth = async () => {
       console.log('🚀 App startup - initializing auth state');
       
-      // If we have both token and user data, consider the user authenticated
-      if (token && user) {
-        console.log('✅ Found existing session, user is authenticated', { userType, email: user.email });
+      try {
+        // If we have both token and user data, verify the session
+        if (token && user) {
+          console.log('✅ Found existing session, verifying...', { userType, email: user.email });
+          
+          // For admin users, trust the stored data (no verification endpoint)
+          if (userType === 'admin') {
+            console.log('✅ Admin session restored');
+            setLoading(false);
+            return;
+          }
+          
+          // For regular users, do a quick session verification
+          await verifyCurrentSession();
+          return;
+        }
+        
+        // No authentication data found
+        console.log('❌ No authentication data found');
         setLoading(false);
         
-        // Only verify session in background for non-admin users
-        if (userType !== 'admin') {
-          verifySessionInBackground();
-        }
-        return;
+      } catch (error) {
+        console.error('❌ Auth initialization error:', error);
+        // Clear invalid auth data
+        await logout();
       }
-      
-      // If we have token but no user data, try to fetch user profile (not for admin)
-      if (token && !user && userType !== 'admin') {
-        console.log('🔄 Found token but no user data, fetching profile...');
-        await fetchUserProfile(false); // Don't logout on failure
-        return;
-      }
-      
-      // No token, user is not authenticated
-      console.log('❌ No authentication data found');
-      setLoading(false);
     };
     
     initializeAuth();
   }, []); // Only run once on app startup
 
-  // Background session verification (doesn't logout on failure)
-  const verifySessionInBackground = async () => {
+  // Verify current session
+  const verifyCurrentSession = async () => {
     try {
-      if (!token || userType === 'admin') return; // Skip for admin users
+      if (!token || userType === 'admin') {
+        setLoading(false);
+        return;
+      }
       
-      console.log('🔄 Background session verification...');
+      console.log('🔄 Verifying current session...');
       
       const verifyResponse = await fetch(summaryApi.verifySession.url, {
         method: summaryApi.verifySession.method,
@@ -755,78 +850,33 @@ export const AuthProvider = ({ children }) => {
 
       if (verifyResponse.ok) {
         const verifyResult = await verifyResponse.json();
-        console.log('✅ Background session verification successful');
+        console.log('✅ Session verification successful');
         
+        // Update user data if it changed
         if (verifyResult.user && JSON.stringify(verifyResult.user) !== JSON.stringify(user)) {
-          // Update user data if it changed
           setUser(verifyResult.user);
-          setStoredAuth({ user: verifyResult.user, userType });
+          setStoredAuth({ user: verifyResult.user, userType, token, refreshToken });
         }
-      } else if (verifyResponse.status === 401 && refreshToken) {
-        console.log('🔄 Token expired, attempting background refresh...');
-        await handleTokenRefresh(false); // Don't logout on failure
-      }
-    } catch (error) {
-      console.warn('⚠️ Background session verification failed (ignored):', error);
-      // Don't logout on background verification failure
-    }
-  };
-
-  // Enhanced profile fetching (with option to not logout on failure)
-  const fetchUserProfile = async (logoutOnFailure = true) => {
-    try {
-      if (!token || userType === 'admin') {
-        if (logoutOnFailure && userType !== 'admin') logout();
-        return null;
-      }
-      
-      const endpoint = userType === 'partner' ? summaryApi.getPartnerProfile : summaryApi.getUserProfile;
-      
-      const response = await fetch(endpoint.url, {
-        method: endpoint.method,
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      
-      if (response.ok) {
-        const result = await response.json();
-        const userData = result.data || result.user || result;
         
-        setUser(userData);
-        setStoredAuth({ user: userData, userType });
         setLoading(false);
-        
-        return userData;
-      } else if (response.status === 401) {
-        // Token expired, try to refresh
-        if (refreshToken) {
-          const refreshResult = await handleTokenRefresh(logoutOnFailure);
-          return refreshResult ? refreshResult.user : null;
-        } else if (logoutOnFailure) {
-          logout();
-        }
+      } else if (verifyResponse.status === 401 && refreshToken) {
+        console.log('🔄 Token expired, attempting refresh...');
+        await handleTokenRefresh();
       } else {
-        console.error('Failed to fetch profile:', response.status);
-        if (logoutOnFailure) {
-          logout();
-        }
+        console.log('❌ Session invalid, logging out');
+        await logout();
       }
     } catch (error) {
-      console.error('Profile fetch error:', error);
-      if (logoutOnFailure) {
-        logout();
-      }
-    } finally {
-      setLoading(false);
+      console.error('❌ Session verification failed:', error);
+      await logout();
     }
-    
-    return null;
   };
 
-  // Enhanced token refresh (with option to not logout on failure)
-  const handleTokenRefresh = async (logoutOnFailure = true) => {
+  // Token refresh handler
+  const handleTokenRefresh = async () => {
     try {
       if (!refreshToken || userType === 'admin') {
-        if (logoutOnFailure && userType !== 'admin') logout();
+        await logout();
         return null;
       }
       
@@ -855,20 +905,17 @@ export const AuthProvider = ({ children }) => {
         setRefreshToken(data.refreshToken);
         setUser(data.user);
         setStoredAuth(authData);
+        setLoading(false);
         
         return data;
       } else {
-        console.error('Token refresh failed:', response.status);
-        if (logoutOnFailure) {
-          logout();
-        }
+        console.error('❌ Token refresh failed:', response.status);
+        await logout();
         return null;
       }
     } catch (error) {
-      console.error('Token refresh error:', error);
-      if (logoutOnFailure) {
-        logout();
-      }
+      console.error('❌ Token refresh error:', error);
+      await logout();
       return null;
     }
   };
@@ -876,7 +923,6 @@ export const AuthProvider = ({ children }) => {
   // Admin login function
   const adminLogin = async (credentials) => {
     try {
-      setLoading(true);
       console.log('🔐 Attempting admin login:', { email: credentials.email });
       
       const response = await fetch(`${backendUrl}/api/admin/auth/login`, {
@@ -915,18 +961,20 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('❌ Admin login error:', error);
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
 
+  // Main login function
   const login = async (credentials, loginUserType = 'user') => {
     try {
       setLoading(true);
+      console.log('🔐 Attempting login:', { email: credentials.email, userType: loginUserType });
       
       // Handle admin login
       if (loginUserType === 'admin') {
-        return await adminLogin(credentials);
+        const result = await adminLogin(credentials);
+        setLoading(false);
+        return result;
       }
       
       const endpoint = loginUserType === 'partner' ? summaryApi.partnerLogin : summaryApi.userLogin;
@@ -942,6 +990,8 @@ export const AuthProvider = ({ children }) => {
       if (!response.ok) {
         throw new Error(data.error || data.message || 'Login failed');
       }
+
+      console.log('✅ Login successful');
 
       // Store all auth data
       const userData = data.user || data.partner || data.data;
@@ -959,10 +1009,9 @@ export const AuthProvider = ({ children }) => {
       setUserType(loginUserType);
       setStoredAuth(authData);
       
-      console.log('✅ Login successful, user data stored');
       return data;
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('❌ Login error:', error);
       throw error;
     } finally {
       setLoading(false);
@@ -1092,6 +1141,34 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const logout = async () => {
+    console.log('🚪 Logging out user...');
+    
+    try {
+      // Call backend logout endpoint if token exists (not for admin)
+      if (token && userType !== 'admin') {
+        await fetch(summaryApi.userLogout.url, {
+          method: summaryApi.userLogout.method,
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+      }
+    } catch (error) {
+      console.error('Logout API call failed:', error);
+      // Continue with local logout even if API call fails
+    } finally {
+      // Clear all local storage and state
+      clearStoredAuth();
+      setToken(null);
+      setRefreshToken(null);
+      setUser(null);
+      setUserType('user');
+      setLoading(false);
+      
+      console.log('✅ User logged out successfully');
+    }
+  };
+
+  // Other methods remain the same...
   const forgotPassword = async (email) => {
     try {
       const response = await fetch(summaryApi.forgotPassword.url, {
@@ -1134,33 +1211,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = async () => {
-    console.log('🚪 Logging out user...');
-    
-    try {
-      // Call backend logout endpoint if token exists
-      if (token && userType !== 'admin') {
-        await fetch(summaryApi.userLogout.url, {
-          method: summaryApi.userLogout.method,
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-      }
-    } catch (error) {
-      console.error('Logout API call failed:', error);
-      // Continue with local logout even if API call fails
-    } finally {
-      // Clear all local storage and state
-      clearStoredAuth();
-      setToken(null);
-      setRefreshToken(null);
-      setUser(null);
-      setUserType('user');
-      setLoading(false);
-      
-      console.log('✅ User logged out successfully');
-    }
-  };
-
   const updateProfile = async (profileData) => {
     try {
       if (userType === 'admin') {
@@ -1191,7 +1241,7 @@ export const AuthProvider = ({ children }) => {
 
       const userData = data.data || data.user || data.partner || data;
       setUser(userData);
-      setStoredAuth({ user: userData, userType });
+      setStoredAuth({ user: userData, userType, token, refreshToken });
       
       return userData;
     } catch (error) {
@@ -1218,31 +1268,6 @@ export const AuthProvider = ({ children }) => {
       return data;
     } catch (error) {
       console.error('Delete account error:', error);
-      throw error;
-    }
-  };
-
-  const syncUserData = async () => {
-    try {
-      const response = await fetch(summaryApi.syncUserData.url, {
-        method: summaryApi.syncUserData.method,
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || 'User sync failed');
-      }
-
-      if (data.user) {
-        setUser(data.user);
-        setStoredAuth({ user: data.user, userType });
-      }
-      
-      return data;
-    } catch (error) {
-      console.error('User sync error:', error);
       throw error;
     }
   };
@@ -1287,17 +1312,14 @@ export const AuthProvider = ({ children }) => {
     logout,
     
     // Profile methods
-    fetchUserProfile,
     updateProfile,
     deleteAccount,
-    syncUserData,
     
     // Utility methods
     verifyEmail,
     forgotPassword,
     resetPassword,
     handleTokenRefresh,
-    verifySessionInBackground,
     resendVerificationEmail
   };
 
