@@ -212,9 +212,9 @@ function Hero() {
       </div> */}
 
       {/* Main Hero Content */}
-      <div className="relative z-30 min-h-screen flex items-center">
+      <div className="relative z-30 min-h-screen flex items-center pb-20 sm:pb-16 lg:pb-8">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[calc(100vh-4rem)]">
+          <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[calc(100vh-8rem)] sm:min-h-[calc(100vh-6rem)] lg:min-h-[calc(100vh-4rem)]">
             
             {/* Left Content */}
             <div className={`transform transition-all duration-1000 ${isVisible ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'}`}>
@@ -295,7 +295,7 @@ function Hero() {
 
             {/* Right Content - Quick Search */}
             <div className={`transform transition-all duration-1000 delay-300 ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'}`}>
-              <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 p-6 lg:p-8 shadow-2xl hover:bg-white/15 transition-all duration-300 transform hover:scale-[1.02]">
+              <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 p-6 lg:p-8 shadow-2xl hover:bg-white/15 transition-all duration-300 transform hover:scale-[1.02] mb-8 sm:mb-6 lg:mb-0">
                 <h3 className="text-2xl font-bold text-white mb-6 text-center">
                   Quick Flight Search
                 </h3>
@@ -458,8 +458,8 @@ function Hero() {
         </div>
       </div>
 
-      {/* Scroll Indicator */}
-      <div className={`absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 transition-all duration-1000 delay-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'}`}>
+      {/* Scroll Indicator - Fixed positioning and mobile responsive */}
+      <div className={`absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 z-20 transition-all duration-1000 delay-1000 hidden lg:block ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'}`}>
         <button 
           onClick={scrollToNextSection}
           className="flex flex-col items-center text-white/70 hover:text-white transition-colors duration-300 group"
