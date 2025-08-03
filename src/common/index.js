@@ -61,28 +61,28 @@ const summaryApi = {
     // ============== FLIGHT ROUTES ==============
     // Flight search routes
     searchFlights: {
-        url: `${backendUrl}/api/flights/search`,
+        url: `${backendUrl}/api/flightsss/search`,
         method: 'POST',
     },
     getFlightDetails: {
-        url: `${backendUrl}/api/flights/details/:flightId`,
+        url: `${backendUrl}/api/flightsss/details/:flightId`,
         method: 'GET',
     },
     getFareRules: {
-        url: `${backendUrl}/api/flights/fare-rules/:flightId`,
+        url: `${backendUrl}/api/flightsss/fare-rules/:flightId`,
         method: 'GET',
     },
     // Airport and airline routes
     searchAirports: {
-        url: `${backendUrl}/api/flights/airports/search`,
+        url: `${backendUrl}/api/flightsss/airports/search`,
         method: 'GET',
     },
     getPopularDestinations: {
-        url: `${backendUrl}/api/flights/destinations/popular`,
+        url: `${backendUrl}/api/flightsss/destinations/popular`,
         method: 'GET',
     },
     getAirlines: {
-        url: `${backendUrl}/api/flights/airlines`,
+        url: `${backendUrl}/api/flightsss/airlines`,
         method: 'GET',
     },
     // Price alerts (protected)
@@ -91,11 +91,11 @@ const summaryApi = {
         method: 'POST',
     },
     getUserPriceAlerts: {
-        url: `${backendUrl}/api/flights/price-alerts`,
+        url: `${backendUrl}/api/flightsss/price-alerts`,
         method: 'GET',
     },
     updatePriceAlert: {
-        url: `${backendUrl}/api/flights/price-alerts/:alertId`,
+        url: `${backendUrl}/api/flightsss/price-alerts/:alertId`,
         method: 'PUT',
     },
     deletePriceAlert: {
@@ -132,65 +132,65 @@ const summaryApi = {
 
     // ============== BOOKING ROUTES ==============
     createBooking: {
-        url: `${backendUrl}/api/bookings`,
+        url: `${backendUrl}/api/bookingsss`,
         method: 'POST',
     },
     getUserBookings: {
-        url: `${backendUrl}/api/bookings`,
+        url: `${backendUrl}/api/bookingsss`,
         method: 'GET',
     },
     getBookingDetails: {
-        url: `${backendUrl}/api/bookings/:bookingId`,
+        url: `${backendUrl}/api/bookingsss/:bookingId`,
         method: 'GET',
     },
     cancelBooking: {
-        url: `${backendUrl}/api/bookings/:bookingId/cancel`,
+        url: `${backendUrl}/api/bookingsss/:bookingId/cancel`,
         method: 'PUT',
     },
     modifyBooking: {
-        url: `${backendUrl}/api/bookings/:bookingId/modify`,
+        url: `${backendUrl}/api/bookingsss/:bookingId/modify`,
         method: 'PUT',
     },
     downloadTicket: {
-        url: `${backendUrl}/api/bookings/:bookingId/ticket`,
+        url: `${backendUrl}/api/bookingsss/:bookingId/ticket`,
         method: 'GET',
     },
 
     // ============== PAYMENT ROUTES ==============
     
      processPayment: {
-        url: `${backendUrl}/api/payments/process`,
+        url: `${backendUrl}/api/paymentsss/process`,
         method: 'POST',
         // Expected payload: { bookingId, paymentMethod, amount }
     },
 
     // Verify payment
     verifyPayment: {
-        url: `${backendUrl}/api/payments/verify/:transactionId`,
+        url: `${backendUrl}/api/paymentsss/verify/:transactionId`,
         method: 'GET',
         // Replace :transactionId with actual transaction ID
     },
 
     // Wallet management
     fundWallet: {
-        url: `${backendUrl}/api/payments/wallet/fund`,
+        url: `${backendUrl}/api/paymentsss/wallet/fund`,
         method: 'POST',
         // Expected payload: { amount, paymentMethod }
     },
 
     getWalletBalance: {
-        url: `${backendUrl}/api/payments/wallet/balance`,
+        url: `${backendUrl}/api/paymentsss/wallet/balance`,
         method: 'GET',
     },
 
     getWalletTransactions: {
-        url: `${backendUrl}/api/payments/wallet/transactions`,
+        url: `${backendUrl}/api/paymentsss/wallet/transactions`,
         method: 'GET',
         // Query params: ?page=1&limit=20
     },
 
     withdrawFromWallet: {
-        url: `${backendUrl}/api/payments/wallet/withdraw`,
+        url: `${backendUrl}/api/paymentsss/wallet/withdraw`,
         method: 'POST',
         // Expected payload: { amount, bankDetails }
     },
@@ -347,19 +347,19 @@ const summaryApi = {
         method: 'GET',
     },
     getPartnerBookings: {
-        url: `${backendUrl}/api/partners/bookings`,
+        url: `${backendUrl}/api/partnersss/bookings`,
         method: 'GET',
     },
     requestPayout: {
-        url: `${backendUrl}/api/partners/payout`,
+        url: `${backendUrl}/api/partnersss/payout`,
         method: 'POST',
     },
     updatePartnerProfile: {
-        url: `${backendUrl}/api/partners/profile`,
+        url: `${backendUrl}/api/partnersss/profile`,
         method: 'PUT',
     },
     getPartnerProfile: {
-        url: `${backendUrl}/api/partners/profile`,
+        url: `${backendUrl}/api/partnersss/profile`,
         method: 'GET',
     },
 
